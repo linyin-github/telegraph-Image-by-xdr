@@ -114,6 +114,7 @@ export async function POST(request) {
 
 
 			} catch (error) {
+				console.log("内层发生异常");
 				console.log(error);
 				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, -1, nowTime);
 
