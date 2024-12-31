@@ -54,16 +54,14 @@ export async function POST(request) {
 	newformData.append(fileTypevalue, formData.get('file'));
 
 	try {
-		const res_img = await fetch(up_url, {
-			method: "POST",
-			headers: {
-				"User-Agent": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0"
-			},
-			body: newformData,
-		});
-
-
-		let responseData = await res_img.json();
+		const responseData = await reTry(up_url,newformData);
+		const n = 0;
+		// 调用接口失败时，最多重试2次，如果都失败就报错吧
+		while(n<3 && (responseData==null || !responseData.ok || (!responseData.result.photo && !response.result.video && !response.result.document))){
+			console.log("接口调用失败，重试");
+			n++;
+			responseData = await reTry(up_url,newformData);
+		}
 		const fileData = await getFile(responseData);
 		const data = {
 			"url": `${req_url.origin}/api/cfile/${fileData.file_id}`,
@@ -130,6 +128,26 @@ export async function POST(request) {
 
 }
 
+
+async function reTry(up_url, newformData) {
+	try{
+		const res_img = await fetch(up_url, {
+			method: "POST",
+			headers: {
+				"User-Agent": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0"
+			},
+			body: newformData,
+		});
+		let responseData = await res_img.json();
+		return responseData;
+	} catch (error) {
+		console.log("reTry方法报错了");
+		console.log(error);
+		return null;
+	}
+	
+}
+
 async function getFile_path(env, file_id) {
 	try {
 		const url = `https://api.telegram.org/bot${env.TG_BOT_TOKEN}/getFile?file_id=${file_id}`;
@@ -170,6 +188,9 @@ const getFile = async (response) => {
 				(prev.file_size > current.file_size) ? prev : current
 			);
 			return getFileDetails(largestPhoto);
+		}else{
+			console.log("不存在response.result.photo");
+			console.log(response);
 		}
 
 		if (response.result.video) {
