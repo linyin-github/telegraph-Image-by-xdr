@@ -98,6 +98,17 @@ export async function POST(request) {
 				const nowTime = await get_nowTime()
 				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, rating_index, nowTime);
 				console.log("插入insertImageData方法完成");
+				console.log(JSON.stringify(Response.json({
+					...data,
+					msg: "2",
+					Referer: Referer,
+					clientIp: clientIp,
+					rating_index: rating_index,
+					nowTime: nowTime
+				}, {
+					status: 200,
+					headers: corsHeaders,
+				})));
 				return Response.json({
 					...data,
 					msg: "2",
