@@ -54,8 +54,8 @@ export async function POST(request) {
 	newformData.append(fileTypevalue, formData.get('file'));
 
 	try {
-		const responseData = await reTry(up_url,newformData);
-		const n = 0;
+		let responseData = await reTry(up_url,newformData);
+		let n = 0;
 		// 调用接口失败时，最多重试2次，如果都失败就报错吧
 		while(n<3 && (responseData==null || !responseData.ok || (!responseData.result.photo && !response.result.video && !response.result.document))){
 			console.log("接口调用失败，重试");
