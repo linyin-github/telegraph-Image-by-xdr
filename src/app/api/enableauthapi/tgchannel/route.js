@@ -100,6 +100,7 @@ export async function POST(request) {
 				console.log("插入insertImageData方法完成");
 				//测试，返回json格式能否接收到数据
 				if(ip=='35.187.201.116'){
+					console.log("ip地址是："+ip);
 					const responseT =  Response.json({
 						...data,
 						msg: "2",
