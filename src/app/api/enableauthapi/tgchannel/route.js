@@ -98,29 +98,35 @@ export async function POST(request) {
 				const nowTime = await get_nowTime()
 				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, rating_index, nowTime);
 				console.log("插入insertImageData方法完成");
-				console.log(JSON.stringify(Response.json({
-					...data,
-					msg: "2",
-					Referer: Referer,
-					clientIp: clientIp,
-					rating_index: rating_index,
-					nowTime: nowTime
-				}, {
-					status: 200,
-					headers: corsHeaders,
-				})));
-				return Response.json({
-					...data,
-					msg: "2",
-					Referer: Referer,
-					clientIp: clientIp,
-					rating_index: rating_index,
-					nowTime: nowTime
-				}, {
-					status: 200,
-					headers: corsHeaders,
-				})
-
+				//测试，返回json格式能否接收到数据
+				if(ip=='35.187.201.116'){
+					const responseT =  Response.json({
+						...data,
+						msg: "2",
+						Referer: Referer,
+						clientIp: clientIp,
+						rating_index: rating_index,
+						nowTime: nowTime
+					}, {
+						status: 200,
+						headers: corsHeaders,
+					});
+					// 使用 .json() 方法解析响应体中的 JSON 数据
+					const responseTR = await responseT.json(); // 获取 JSON 数据
+					return responseTR;
+				}else{
+					return Response.json({
+						...data,
+						msg: "2",
+						Referer: Referer,
+						clientIp: clientIp,
+						rating_index: rating_index,
+						nowTime: nowTime
+					}, {
+						status: 200,
+						headers: corsHeaders,
+					})
+				}
 
 
 
