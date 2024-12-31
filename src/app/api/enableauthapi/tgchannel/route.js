@@ -75,7 +75,15 @@ export async function POST(request) {
 		}
 		console.log(data);
 		if (!env.IMG) {
+			console.log("env.IMG信息不存在");
 			data.env_img = "null"
+			console.log(Response.json({
+				...data,
+				msg: "1"
+			}, {
+				status: 200,
+				headers: corsHeaders,
+			}));
 			return Response.json({
 				...data,
 				msg: "1"
@@ -88,7 +96,17 @@ export async function POST(request) {
 				const rating_index = await getRating(env, `${fileData.file_id}`);
 				const nowTime = await get_nowTime()
 				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, rating_index, nowTime);
-
+				console.log(Response.json({
+					...data,
+					msg: "2",
+					Referer: Referer,
+					clientIp: clientIp,
+					rating_index: rating_index,
+					nowTime: nowTime
+				}, {
+					status: 200,
+					headers: corsHeaders,
+				}));
 				return Response.json({
 					...data,
 					msg: "2",
