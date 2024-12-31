@@ -64,16 +64,16 @@ export async function POST(request) {
 
 
 		let responseData = await res_img.json();
-		console.log("上传接口返回结果："+responseData);
+		console.log(responseData);
 		const fileData = await getFile(responseData);
-		console.log("获取文件信息方法返回结果："+fileData);
-		console.log("env信息："+env);
+		console.log(fileData);
+		console.log(env);
 		const data = {
 			"url": `${req_url.origin}/api/cfile/${fileData.file_id}`,
 			"code": 200,
 			"name": fileData.file_name
 		}
-		console.log("data信息："+data);
+		console.log(data);
 		if (!env.IMG) {
 			data.env_img = "null"
 			return Response.json({
