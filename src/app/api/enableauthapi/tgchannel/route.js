@@ -64,26 +64,15 @@ export async function POST(request) {
 
 
 		let responseData = await res_img.json();
-		console.log(responseData);
 		const fileData = await getFile(responseData);
-		console.log(fileData);
-		console.log(env);
 		const data = {
 			"url": `${req_url.origin}/api/cfile/${fileData.file_id}`,
 			"code": 200,
 			"name": fileData.file_name
 		}
-		console.log(data);
+
 		if (!env.IMG) {
-			console.log("env.IMG信息不存在");
 			data.env_img = "null"
-			console.log(Response.json({
-				...data,
-				msg: "1"
-			}, {
-				status: 200,
-				headers: corsHeaders,
-			}));
 			return Response.json({
 				...data,
 				msg: "1"
@@ -92,12 +81,10 @@ export async function POST(request) {
 				headers: corsHeaders,
 			})
 		} else {
-			console.log("上传成功了，继续获取图片加载地址");
 			try {
 				const rating_index = await getRating(env, `${fileData.file_id}`);
 				const nowTime = await get_nowTime()
 				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, rating_index, nowTime);
-				console.log("插入insertImageData方法完成");
 				return Response.json({
 					...data,
 					msg: "2",
@@ -111,7 +98,6 @@ export async function POST(request) {
 				})
 
 			} catch (error) {
-				console.log("内层发生异常");
 				console.log(error);
 				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, -1, nowTime);
 
@@ -131,7 +117,6 @@ export async function POST(request) {
 
 
 	} catch (error) {
-		console.log("最外层error：");
 		console.log(error);
 		return Response.json({
 			status: 500,
