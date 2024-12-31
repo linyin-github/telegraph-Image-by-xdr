@@ -92,21 +92,12 @@ export async function POST(request) {
 				headers: corsHeaders,
 			})
 		} else {
+			console.log("上传成功了，继续获取图片加载地址");
 			try {
 				const rating_index = await getRating(env, `${fileData.file_id}`);
 				const nowTime = await get_nowTime()
 				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, rating_index, nowTime);
-				console.log(Response.json({
-					...data,
-					msg: "2",
-					Referer: Referer,
-					clientIp: clientIp,
-					rating_index: rating_index,
-					nowTime: nowTime
-				}, {
-					status: 200,
-					headers: corsHeaders,
-				}));
+				console.log("插入insertImageData方法完成");
 				return Response.json({
 					...data,
 					msg: "2",
@@ -142,6 +133,8 @@ export async function POST(request) {
 
 
 	} catch (error) {
+		console.log("最外层error：");
+		console.log(error);
 		return Response.json({
 			status: 500,
 			message: ` ${error.message}`,
