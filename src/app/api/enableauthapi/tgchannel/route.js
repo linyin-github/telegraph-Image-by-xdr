@@ -40,7 +40,7 @@ export async function POST(request) {
 		'application/pdf': { url: 'sendDocument', type: 'document' }
 	};
 
-	let defaultType = { url: 'sendDocument', type: 'document' };
+	let defaultType = { url: 'sendPhoto', type: 'photo' };
 
 	const { url: endpoint, type: fileTypevalue } = Object.keys(fileTypeMap)
 		.find(key => fileType.startsWith(key))
