@@ -59,6 +59,7 @@ export async function POST(request) {
 		// 调用接口失败时，最多重试2次，如果都失败就报错吧
 		while(n<3 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
 			console.log("接口调用失败，重试");
+			console.log(responseData);
 			n++;
 			responseData = await reTry(up_url,newformData);
 		}
