@@ -61,9 +61,9 @@ export async function POST(request) {
 			const retryAfter = responseData.parameters.retry_after
 			console.log("超过调用频率，延时调用："+retryAfter);
 			// 等待 `retry_after` 秒后重试
-            setTimeout(() => {
-                responseData = reTry(up_url,newformData);
-            }, retryAfter * 1000);  // 转换为毫秒
+			// 使用 Promise 和 setTimeout 模拟延时
+			await delay(retryAfter * 1000);  // 转换为毫秒
+            responseData = reTry(up_url,newformData);
 		}
 		// 如果返回其他错误，就重试3次
 		while(n<3 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
@@ -138,6 +138,10 @@ export async function POST(request) {
 
 }
 
+// 延迟函数
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function reTry(up_url, newformData) {
 	try{
