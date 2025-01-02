@@ -56,9 +56,18 @@ export async function POST(request) {
 	try {
 		let responseData = await reTry(up_url,newformData);
 		let n = 0;
-		// 调用接口失败时，最多重试2次，如果都失败就报错吧
+		// 调用接口失败时，如果返回码为429，超过调用频率限制，按照响应的时间延时后在调用。
+		if(!responseData.ok && responseData.error_code == 429){
+			const retryAfter = responseData.parameters.retry_after
+			console.log("超过调用频率，延时调用："+retryAfter);
+			// 等待 `retry_after` 秒后重试
+            setTimeout(() => {
+                responseData = reTry(up_url,newformData);
+            }, retryAfter * 1000);  // 转换为毫秒
+		}
+		// 如果返回其他错误，就重试3次
 		while(n<3 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
-			console.log("接口调用失败，重试");
+			console.log("接口调用返回了其他错误，使用while重试3次");
 			console.log(responseData);
 			n++;
 			responseData = await reTry(up_url,newformData);
