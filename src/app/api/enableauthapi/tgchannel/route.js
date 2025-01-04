@@ -62,7 +62,7 @@ export async function POST(request) {
 			console.log("超过调用频率，延时调用："+retryAfter);
 			// 等待 `retry_after` 秒后重试
 			// 使用 Promise 和 setTimeout 模拟延时
-			await delay(retryAfter * 1000);  // 转换为毫秒
+			await delay((retryAfter * 1000)+200);  // 转换为毫秒
             responseData = reTry(up_url,newformData);
 		}
 		// 如果返回其他错误，就重试3次
