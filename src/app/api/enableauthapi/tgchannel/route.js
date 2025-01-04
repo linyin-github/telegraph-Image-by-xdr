@@ -61,14 +61,14 @@ export async function POST(request) {
 		if(!responseData.ok && responseData.error_code == 429){
 			const retryAfter = responseData.parameters.retry_after
 			console.log("超过调用频率，延时调用："+retryAfter);
-			console.log(new Date());
+			console.log("延时调用前时间："+new Date());
 			// 等待 `retry_after` 秒后重试
 			// 使用 Promise 和 setTimeout 模拟延时
 			await delay((retryAfter * 1000)+200);  // 转换为毫秒
-			console.log(new Date());
+			console.log("延时调用后时间："+new Date());
 			newformData.set("caption", 'secondInterface-延时重试');
             responseData = reTry(up_url,newformData);
-			console.log(JSON.stringify(responseData));  // 打印响应体中的 JSON 数据
+			console.log("延时重试结果："+JSON.stringify(responseData));  // 打印响应体中的 JSON 数据
 		}
 		// 如果返回其他错误，就重试1次
 		while(n<1 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
@@ -76,7 +76,7 @@ export async function POST(request) {
 			n++;
 			newformData.set("caption", 'secondInterface-while重试');
 			responseData = await reTry(up_url,newformData);
-			console.log(JSON.stringify(responseData));
+			console.log("while重试结果："+JSON.stringify(responseData));
 		}
 		const fileData = await getFile(responseData);
 		const data = {
