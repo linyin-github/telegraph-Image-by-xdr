@@ -64,6 +64,7 @@ export async function POST(request) {
 			// 等待 `retry_after` 秒后重试
 			// 使用 Promise 和 setTimeout 模拟延时
 			await delay((retryAfter * 1000)+200);  // 转换为毫秒
+			newformData.append("caption", 'secondInterface-延时重试');
             responseData = reTry(up_url,newformData);
 			responseData.json().then(data => {
 				console.log(data);  // 打印响应体中的 JSON 数据
@@ -73,6 +74,7 @@ export async function POST(request) {
 		while(n<1 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
 			console.log("接口调用返回了其他错误，使用while重试3次");
 			n++;
+			newformData.append("caption", 'secondInterface-while重试');
 			responseData = await reTry(up_url,newformData);
 			responseData.json().then(data => {
 				console.log(data);  // 打印响应体中的 JSON 数据
