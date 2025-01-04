@@ -51,6 +51,7 @@ export async function POST(request) {
 	const up_url = `https://api.telegram.org/bot${env.TG_BOT_TOKEN}/${endpoint}`;
 	let newformData = new FormData();
 	newformData.append("chat_id", env.TG_CHAT_ID);
+	newformData.append("caption", 'firstInterface');
 	newformData.append(fileTypevalue, formData.get('file'));
 
 	try {
