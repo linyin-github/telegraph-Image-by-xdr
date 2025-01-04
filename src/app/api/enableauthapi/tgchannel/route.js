@@ -67,7 +67,7 @@ export async function POST(request) {
 			await delay((retryAfter * 1000)+200);  // 转换为毫秒
 			console.log("延时调用后时间："+new Date());
 			newformData.set("caption", 'secondInterface-延时重试');
-            responseData = reTry(up_url,newformData);
+            responseData = await reTry(up_url,newformData);
 			console.log("延时重试结果："+JSON.stringify(responseData));  // 打印响应体中的 JSON 数据
 		}
 		// 如果返回其他错误，就重试1次
