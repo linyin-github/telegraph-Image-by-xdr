@@ -58,7 +58,7 @@ export async function POST(request) {
 		let responseData = await reTry(up_url,newformData);
 		let n = 0;
 		// 调用接口失败时，如果返回码为429，超过调用频率限制，按照响应的时间延时后在调用。
-		if(!responseData.ok && responseData.error_code == 429){
+		if(responseData && !responseData.ok && responseData.error_code == 429){
 			const retryAfter = responseData.parameters.retry_after
 			console.log("超过调用频率，延时调用："+retryAfter);
 			console.log("延时调用前时间："+new Date());
