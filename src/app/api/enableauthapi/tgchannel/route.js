@@ -68,9 +68,7 @@ export async function POST(request) {
 			console.log(new Date());
 			newformData.set("caption", 'secondInterface-延时重试');
             responseData = reTry(up_url,newformData);
-			responseData.json().then(data => {
-				console.log(data);  // 打印响应体中的 JSON 数据
-			});
+			console.log(JSON.stringify(responseData));  // 打印响应体中的 JSON 数据
 		}
 		// 如果返回其他错误，就重试1次
 		while(n<1 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
@@ -78,9 +76,7 @@ export async function POST(request) {
 			n++;
 			newformData.set("caption", 'secondInterface-while重试');
 			responseData = await reTry(up_url,newformData);
-			responseData.json().then(data => {
-				console.log(data);  // 打印响应体中的 JSON 数据
-			});
+			console.log(JSON.stringify(responseData));
 		}
 		const fileData = await getFile(responseData);
 		const data = {
