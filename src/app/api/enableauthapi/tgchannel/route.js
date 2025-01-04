@@ -64,6 +64,7 @@ export async function POST(request) {
 			// 使用 Promise 和 setTimeout 模拟延时
 			await delay((retryAfter * 1000)+200);  // 转换为毫秒
             responseData = reTry(up_url,newformData);
+			console.log(responseData);
 		}
 		// 如果返回其他错误，就重试3次
 		while(n<3 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
