@@ -61,9 +61,11 @@ export async function POST(request) {
 		if(!responseData.ok && responseData.error_code == 429){
 			const retryAfter = responseData.parameters.retry_after
 			console.log("超过调用频率，延时调用："+retryAfter);
+			console.log(new Date());
 			// 等待 `retry_after` 秒后重试
 			// 使用 Promise 和 setTimeout 模拟延时
 			await delay((retryAfter * 1000)+200);  // 转换为毫秒
+			console.log(new Date());
 			newformData.append("caption", 'secondInterface-延时重试');
             responseData = reTry(up_url,newformData);
 			responseData.json().then(data => {
