@@ -66,7 +66,7 @@ export async function POST(request) {
 			// 使用 Promise 和 setTimeout 模拟延时
 			await delay((retryAfter * 1000)+200);  // 转换为毫秒
 			console.log("延时调用后时间："+new Date());
-			newformData.set("caption", 'secondInterface-延时重试');
+			newformData.set("caption", 'firstInterface-延时重试');
             responseData = await reTry(up_url,newformData);
 			console.log("延时重试结果："+JSON.stringify(responseData));  // 打印响应体中的 JSON 数据
 		}
@@ -74,7 +74,7 @@ export async function POST(request) {
 		while(n<1 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
 			console.log("接口调用返回了其他错误，使用while重试3次");
 			n++;
-			newformData.set("caption", 'secondInterface-while重试');
+			newformData.set("caption", 'firstInterface-while重试');
 			responseData = await reTry(up_url,newformData);
 			console.log("while重试结果："+JSON.stringify(responseData));
 		}
