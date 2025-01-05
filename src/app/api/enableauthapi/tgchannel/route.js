@@ -56,20 +56,20 @@ export async function POST(request) {
 
 	try {
 		let responseData = await reTry(up_url,newformData);
-		let n = 0;
 		// 调用接口失败时，如果返回码为429，超过调用频率限制，按照响应的时间延时后在调用。
-		if(responseData && !responseData.ok && responseData.error_code == 429){
+		let n429=0;//定义延时重试次数，防止死循环调用，限制最多10次
+		while(n429<10 && responseData && !responseData.ok && responseData.error_code == 429){
+			n429++;
 			const retryAfter = responseData.parameters.retry_after
 			console.log("超过调用频率，延时调用："+retryAfter);
-			console.log("延时调用前时间："+new Date());
 			// 等待 `retry_after` 秒后重试
 			// 使用 Promise 和 setTimeout 模拟延时
-			await delay((retryAfter * 1000)+200);  // 转换为毫秒
-			console.log("延时调用后时间："+new Date());
-			newformData.set("caption", 'firstInterface-延时重试');
+			await delay((retryAfter * 1000));  // 转换为毫秒
+			newformData.set("caption", 'firstInterface-延时重试第'+n429+'次');
             responseData = await reTry(up_url,newformData);
-			console.log("延时重试结果："+JSON.stringify(responseData));  // 打印响应体中的 JSON 数据
+			console.log("延时重试结果："+JSON.stringify(responseData));
 		}
+		let n = 0;
 		// 如果返回其他错误，就重试1次
 		while(n<1 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
 			console.log("接口调用返回了其他错误，使用while重试3次");
