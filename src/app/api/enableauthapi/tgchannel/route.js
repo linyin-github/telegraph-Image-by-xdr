@@ -71,12 +71,13 @@ export async function POST(request) {
 		}
 		let n = 0;
 		// 如果返回其他错误，就重试1次
-		while(n<1 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
-			console.log("接口调用返回了其他错误，使用while重试3次");
+		while(n<3 && (responseData==null || !responseData.ok || (!responseData.result.photo && !responseData.result.video && !responseData.result.document))){
+			console.log("接口调用返回了其他错误，使用while重试第"+n+"次");
 			n++;
-			newformData.set("caption", 'firstInterface-while重试');
+			await delay((10 * 1000));  // 最多调用N次，每次延迟10秒调用
+			newformData.set("caption", 'firstInterface-while重试第'+n+"次");
 			responseData = await reTry(up_url,newformData);
-			console.log("while重试结果："+JSON.stringify(responseData));
+			console.log("第"+n+"次while重试结果："+JSON.stringify(responseData));
 		}
 		const fileData = await getFile(responseData);
 		const data = {
