@@ -18,9 +18,6 @@ export default auth(async (req) => {
 
     // 检查 referer 中是否包含 031234，如果是则直接放行
     const referer = headers.get("referer") || "";
-    if (referer.includes("031234")) {
-        return; // 放行
-    }
 
     const isAuthenticated = !!req.auth;
     const isAPI_ADMIN = nextUrl.pathname.startsWith(API_ADMIN);
@@ -40,7 +37,7 @@ export default auth(async (req) => {
         }
         else if (isAuthAPI) {
 
-            if (enableAuthapi && !referer.includes("031234.xyz")) {
+            if (enableAuthapi && !referer.includes("imageGaoss")) {
                 return Response.json(
                     { status: "fail", message: "You are not logged in by user !", success: false },
                     { status: 401 }
