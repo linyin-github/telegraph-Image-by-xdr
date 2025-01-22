@@ -46,7 +46,8 @@ export async function POST(request) {
 		.find(key => fileType.startsWith(key))
 		? fileTypeMap[Object.keys(fileTypeMap).find(key => fileType.startsWith(key))]
 		: defaultType;
-
+	console.log(fileTypevalue);
+	console.log(endpoint);
 
 	const up_url = `https://api.telegram.org/bot${env.TG_BOT_TOKEN}/${endpoint}`;
 	let newformData = new FormData();
