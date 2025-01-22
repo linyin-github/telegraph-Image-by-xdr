@@ -40,7 +40,7 @@ export async function POST(request) {
 		'application/pdf': { url: 'sendDocument', type: 'document' }
 	};
 
-	let defaultType = { url: 'sendPhoto', type: 'photo' };
+	let defaultType = { url: 'sendDocument', type: 'document' }; //修改为默认使用文档上传，因为使用图片格式telegraph会统一转换为JPG并压缩。
 
 	const { url: endpoint, type: fileTypevalue } = Object.keys(fileTypeMap)
 		.find(key => fileType.startsWith(key))
