@@ -120,7 +120,7 @@ export async function GET(request, { params }) {
 
         const contentType = getContentType(fileName);
         const responseHeaders = {
-          "Content-Disposition": `attachment; filename=${fileName}`,
+          "Content-Disposition": `inline; filename=${fileName}`,
           "Access-Control-Allow-Origin": "*",
           "Content-Type": contentType
         };
