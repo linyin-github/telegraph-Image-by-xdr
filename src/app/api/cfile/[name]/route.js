@@ -93,7 +93,9 @@ export async function GET(request, { params }) {
 
   try {
     const file_path = await getFile_path(env, name);
+    console.log("filePath:"+file_path);
     const fileName = file_path.split('/').pop();
+    console.log("fileName:"+fileName);
 
     if (file_path === "error") {
       return Response.json({
@@ -119,6 +121,7 @@ export async function GET(request, { params }) {
 
 
         const contentType = getContentType(fileName);
+        console.log("contentType:"+contentType);
         const responseHeaders = {
           "Content-Disposition": `inline; filename=${fileName}`,
           "Access-Control-Allow-Origin": "*",
