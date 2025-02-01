@@ -245,7 +245,7 @@ async function logRequest(env, base_name, referer, ip) {
   try {
     const nowTime = await get_nowTime()
     await insertTgImgLog(env.IMG, `/cfile/${base_name}`, referer, ip, nowTime);
-    const setData = await env.IMG.prepare(`UPDATE imginfo SET total = total +1 WHERE url = '/rfile/${name}';`).run()
+    const setData = await env.IMG.prepare(`UPDATE imginfo SET total = total +1 WHERE url = '/rfile/${base_name}';`).run()
   } catch (error) {
     console.error('Error logging request:', error);
   }
