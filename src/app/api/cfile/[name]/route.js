@@ -45,7 +45,7 @@ export async function OPTIONS(request) {
 
 export async function GET(request, { params }) {
   const { name } = params;
-  name = split(".")[0];
+  name = name.split(".")[0];
   let { env, cf, ctx } = getRequestContext();
 
   let req_url = new URL(request.url);
