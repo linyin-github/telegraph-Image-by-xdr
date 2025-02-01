@@ -30,7 +30,7 @@ function getContentType(fileName) {
     'flv': 'video/x-flv',
     'mkv': 'video/x-matroska'
   };
-  return mimeTypes[extension] || 'application/octet-stream';
+  return mimeTypes[extension] || 'image/jpeg';
 }
 
 
