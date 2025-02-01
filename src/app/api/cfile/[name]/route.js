@@ -92,8 +92,8 @@ export async function GET(request, { params }) {
 
 
   try {
-    console.log("name:"+name);
     const file_path = await getFile_path(env, name);
+    console.log("name:"+name);
     console.log("filePath:"+file_path);
     const fileName = file_path.split('/').pop();
     console.log("fileName:"+fileName);
