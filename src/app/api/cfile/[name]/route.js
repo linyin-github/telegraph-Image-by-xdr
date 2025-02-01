@@ -45,7 +45,7 @@ export async function OPTIONS(request) {
 
 export async function GET(request, { params }) {
   const { name } = params;
-  name = name.split(".")[0];
+  const base_name = name.split(".")[0];
   let { env, cf, ctx } = getRequestContext();
 
   let req_url = new URL(request.url);
@@ -71,9 +71,9 @@ export async function GET(request, { params }) {
   let rating
 
   try {
-    rating = await getRating(env.IMG, `/cfile/${name}`);
+    rating = await getRating(env.IMG, `/cfile/${base_name}`);
     if (rating === 3 && !(Referer === `${req_url.origin}/admin` || Referer === `${req_url.origin}/list` || Referer === `${req_url.origin}/`)) {
-      await logRequest(env, name, Referer, clientIp);
+      await logRequest(env, base_name, Referer, clientIp);
       return Response.redirect(`${req_url.origin}/img/blocked.png`, 302);
     }
 
@@ -85,7 +85,7 @@ export async function GET(request, { params }) {
   let cachedResponse = await cache.match(cacheKey);
   if (cachedResponse) {
     if (!(Referer === `${req_url.origin}/admin` || Referer === `${req_url.origin}/list` || Referer === `${req_url.origin}/`)) {
-      await logRequest(env, name, Referer, clientIp);
+      await logRequest(env, base_name, Referer, clientIp);
     }
     // 如果缓存中存在，直接返回缓存响应
     return cachedResponse
@@ -93,7 +93,7 @@ export async function GET(request, { params }) {
 
 
   try {
-    const file_path = await getFile_path(env, name);
+    const file_path = await getFile_path(env, base_name);
     const fileName = file_path.split('/').pop();
 
     if (file_path === "error") {
@@ -139,7 +139,7 @@ export async function GET(request, { params }) {
           return response_img
 
         } else {
-          await logRequest(env, name, Referer, clientIp);
+          await logRequest(env, base_name, Referer, clientIp);
           return response_img
 
         }
@@ -241,10 +241,10 @@ async function get_nowTime() {
 
 
 // 异步日志记录
-async function logRequest(env, name, referer, ip) {
+async function logRequest(env, base_name, referer, ip) {
   try {
     const nowTime = await get_nowTime()
-    await insertTgImgLog(env.IMG, `/cfile/${name}`, referer, ip, nowTime);
+    await insertTgImgLog(env.IMG, `/cfile/${base_name}`, referer, ip, nowTime);
     const setData = await env.IMG.prepare(`UPDATE imginfo SET total = total +1 WHERE url = '/rfile/${name}';`).run()
   } catch (error) {
     console.error('Error logging request:', error);
