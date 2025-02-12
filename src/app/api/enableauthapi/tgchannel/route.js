@@ -80,6 +80,7 @@ export async function POST(request) {
 			responseData = await reTry(up_url,newformData);
 			console.log("第"+n+"次while重试结果："+JSON.stringify(responseData));
 		}
+		console.log(responseData);
 		const fileData = await getFile(responseData);
 		const data = {
 			"url": `${req_url.origin}/api/cfile/${fileData.file_id}`,
