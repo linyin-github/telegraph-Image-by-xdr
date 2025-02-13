@@ -47,7 +47,7 @@ export async function GET(request, { params }) {
   const { name } = params;
   //const base_name = name.split(".")[0];
   const matches = name.match(/([^\/]+)(?:-(\d+)x(\d+))?(?:\.jpg)?$/);;
-  const base_name = name.split(".")[0]; // url地址部分
+  const base_name = matches[1]; // url地址部分
   const width = matches[2]; // 图片宽度，用于判断是否更新url
   const height = matches[3]; // 图片高度，用于判断是否更新url
   console.log("base_name:"+base_name+",width:"+width+",height:"+height);
