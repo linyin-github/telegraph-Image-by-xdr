@@ -104,7 +104,7 @@ export async function GET(request, { params }) {
     // modify 20250213 ,如果地址没有图片宽度和高度，重新上传获取并更新url地址，使用文件名判断是否需要重新上传获取宽高，只有图片才需要
     console.log("contentTypeForWh:"+contentTypeForWh);
     if(!height && !width && contentTypeForWh.indexOf('image')!=-1){
-      const fileData = await uploadForWH(env,file_id);
+      const fileData = await uploadForWH(env,base_name);
       console.log(fileData);
       const update_url = base_name + '-'+ fileData.width +'x'+fileData.height; //拼接图片宽度和高度
       await updateUrl(env,base_name,update_url);
