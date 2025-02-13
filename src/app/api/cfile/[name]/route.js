@@ -214,8 +214,20 @@ async function uploadForWH(env,file_id) {
 			body: newformData,
 		});
 		let responseData = await res_img.json();
+    const fileData = await getFile(responseData);
+		return fileData;
+	} catch (error) {
+		console.log("uploadForWH");
+		console.log(error);
+		return null;
+	}
+}
 
-
+const getFile = async (response) => {
+	try {
+		if (!response.ok) {
+			return null;
+		}
     // modify 20250212 ，新增图片宽高信息返回，添加到图片访问地址中，用于wordpress预加载时使用
 		const getFileDetails = (file) => ({
 			file_id: file.file_id,
@@ -224,23 +236,21 @@ async function uploadForWH(env,file_id) {
 			height: file.height
 		});
 
-		if (responseData.result.photo) {
-			const largestPhoto = responseData.result.photo.reduce((prev, current) =>
+		if (response.result.photo) {
+			const largestPhoto = response.result.photo.reduce((prev, current) =>
 				(prev.file_size > current.file_size) ? prev : current
 			);
 			return getFileDetails(largestPhoto);
 		}else{
 			console.log("不存在responseData.result.photo");
-			console.log(responseData);
+			console.log(response);
       return null;
 		}
-		
 	} catch (error) {
-		console.log("uploadForWH");
-		console.log(error);
+		console.error('Error getting file id:', error.message);
 		return null;
 	}
-}
+};
 
 async function getFile_path(env, file_id) {
   try {
