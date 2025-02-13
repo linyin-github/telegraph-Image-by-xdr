@@ -120,8 +120,6 @@ export async function GET(request, { params }) {
       });
 
       if (res.ok) {
-        let tResponseData = await res.json();
-        console.log(tResponseData);
         const fileBuffer = await res.arrayBuffer();
 
 
