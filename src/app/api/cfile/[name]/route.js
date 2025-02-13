@@ -118,8 +118,11 @@ export async function GET(request, { params }) {
     if(!height && !width && contentTypeForWh.indexOf('image')!=-1){
       const fileData = await uploadForWH(env,base_name);
       console.log(fileData);
-      const update_url = base_name + '-'+ fileData.width +'x'+fileData.height; //拼接图片宽度和高度
-      await updateUrl(env,base_name,update_url);
+      if(fileData){//防止fileData返回null导致报错
+        const update_url = base_name + '-'+ fileData.width +'x'+fileData.height; //拼接图片宽度和高度
+        await updateUrl(env,base_name,update_url);
+      }
+      
     }
 
     if (file_path === "error") {
