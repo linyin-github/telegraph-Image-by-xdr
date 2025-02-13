@@ -85,19 +85,19 @@ export async function GET(request, { params }) {
   const cacheKey = new Request(req_url.toString(), request);
   const cache = caches.default;
 
-  let rating
+  // let rating
 
-  try {
-    rating = await getRating(env.IMG, `/cfile/${base_name}`);
-    if (rating === 3 && !(Referer === `${req_url.origin}/admin` || Referer === `${req_url.origin}/list` || Referer === `${req_url.origin}/`)) {
-      await logRequest(env, base_name, Referer, clientIp);
-      return Response.redirect(`${req_url.origin}/img/blocked.png`, 302);
-    }
+  // try {
+  //   rating = await getRating(env.IMG, `/cfile/${base_name}`);
+  //   if (rating === 3 && !(Referer === `${req_url.origin}/admin` || Referer === `${req_url.origin}/list` || Referer === `${req_url.origin}/`)) {
+  //     await logRequest(env, base_name, Referer, clientIp);
+  //     return Response.redirect(`${req_url.origin}/img/blocked.png`, 302);
+  //   }
 
-  } catch (error) {
-    console.log(error);
+  // } catch (error) {
+  //   console.log(error);
 
-  }
+  // }
   // 检查缓存
   let cachedResponse = await cache.match(cacheKey);
   if (cachedResponse) {
