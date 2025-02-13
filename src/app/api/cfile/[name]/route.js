@@ -1,6 +1,6 @@
 export const runtime = 'edge';
 import { getRequestContext } from '@cloudflare/next-on-pages';
-import sizeOf from 'image-size';
+import sizeOf from 'browser-image-size';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
