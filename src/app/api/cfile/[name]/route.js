@@ -124,10 +124,7 @@ export async function GET(request, { params }) {
         const contentType = getContentType(fileName);
         console.log("contentType:"+contentType);
         // 解析图片的宽度和高度
-        const widthAndHeight = await getImageDimensions(fileBuffer, contentType);
-        console.log("Width:", widthAndHeight.width);
-        console.log("Height:", widthAndHeight.height);
-        console.log(`Image Dimensions: ${widthAndHeight.width}x${widthAndHeight.height}`);
+
         const responseHeaders = {
           "Content-Disposition": `inline; filename=${fileName}`,
           "Access-Control-Allow-Origin": "*",
@@ -177,30 +174,6 @@ export async function GET(request, { params }) {
 
 }
 
-
-// 添加一个函数来解析图片的宽度和高度
-async function getImageDimensions(buffer, contentType) {
-  return new Promise((resolve, reject) => {
-      const blob = new Blob([buffer], { type: contentType });
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-
-      img.onload = () => {
-          resolve({
-              width: img.width,
-              height: img.height
-          });
-          URL.revokeObjectURL(url);
-      };
-
-      img.onerror = (err) => {
-          reject(new Error('Failed to load image'));
-          URL.revokeObjectURL(url);
-      };
-
-      img.src = url;
-  });
-}
 
 async function getFile_path(env, file_id) {
   try {
