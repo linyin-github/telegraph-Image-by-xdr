@@ -1,6 +1,6 @@
 export const runtime = 'edge';
 import { getRequestContext } from '@cloudflare/next-on-pages';
-
+import getSize from 'get-image-size';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -122,11 +122,11 @@ export async function GET(request, { params }) {
 
       if (res.ok) {
         const fileBuffer = await res.arrayBuffer();
-        // // 使用 image-size 获取图片的宽高
-        // const dimensions = sizeOf(fileBuffer);
-        // const width = dimensions.width;
-        // const height = dimensions.height;
-        // console.log(`Image Dimensions: ${width}x${height}`);
+        // 使用 get-image-size 获取图片的宽高
+        const dimensions = getSize(fileBuffer);  // 获取图像尺寸
+        const width = dimensions.width;
+        const height = dimensions.height;
+        console.log(`Image Dimensions: ${width}x${height}`);
 
 
         const contentType = getContentType(fileName);
