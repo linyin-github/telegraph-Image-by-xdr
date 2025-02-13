@@ -191,7 +191,7 @@ async function uploadForWH(env,file_id) {
 	let newformData = new FormData();
 	newformData.append("chat_id", env.TG_CHAT_ID);
 	newformData.append("caption", 'uploadForWH');
-	newformData.append(fileTypevalue, file_id);
+	newformData.append("photo", file_id); //这里固定图片
 
   try{
 		const res_img = await fetch(up_url, {
