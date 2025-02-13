@@ -82,8 +82,15 @@ export async function POST(request) {
 		}
 		console.log(responseData);
 		const fileData = await getFile(responseData);
+		let wh_url= ""; // url地址
+		//当存在宽度和高度时才修改url地址
+		if(fileData.width && fileData.height){
+			wh_url = `${req_url.origin}/api/cfile/${fileData.file_id}-${fileData.width}x${fileData.height}`;
+		}else{
+			wh_url = `${req_url.origin}/api/cfile/${fileData.file_id}`;
+		}
 		const data = {
-			"url": `${req_url.origin}/api/cfile/${fileData.file_id}`,
+			"url": wh_url,
 			"code": 200,
 			"name": fileData.file_name
 		}
@@ -101,7 +108,7 @@ export async function POST(request) {
 			try {
 				const rating_index = await getRating(env, `${fileData.file_id}`);
 				const nowTime = await get_nowTime()
-				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, rating_index, nowTime);
+				await insertImageData(env.IMG, wh_url, Referer, clientIp, rating_index, nowTime);
 				return Response.json({
 					...data,
 					msg: "2",
@@ -116,7 +123,7 @@ export async function POST(request) {
 
 			} catch (error) {
 				console.log(error);
-				await insertImageData(env.IMG, `/cfile/${fileData.file_id}`, Referer, clientIp, -1, nowTime);
+				await insertImageData(env.IMG, wh_url, Referer, clientIp, -1, nowTime);
 
 
 				return Response.json({
@@ -200,10 +207,12 @@ const getFile = async (response) => {
 		if (!response.ok) {
 			return null;
 		}
-
+		// modify 20250212 ，新增图片宽高信息返回，添加到图片访问地址中，用于wordpress预加载时使用
 		const getFileDetails = (file) => ({
 			file_id: file.file_id,
-			file_name: file.file_name || file.file_unique_id
+			file_name: file.file_name || file.file_unique_id,
+			width: file.width,
+			height: file.height
 		});
 
 		if (response.result.photo) {
