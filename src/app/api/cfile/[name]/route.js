@@ -119,6 +119,7 @@ export async function GET(request, { params }) {
       });
 
       if (res.ok) {
+        console.log(res);
         const fileBuffer = await res.arrayBuffer();
 
 
