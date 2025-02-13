@@ -45,7 +45,11 @@ export async function OPTIONS(request) {
 
 export async function GET(request, { params }) {
   const { name } = params;
-  const base_name = name.split(".")[0];
+  //const base_name = name.split(".")[0];
+  const matches = name.match(/([^\/-]+)(?:-(\d+)x(\d+))?(?:\.jpg)?$/);
+  const base_name = matches[1]; // url地址部分
+  const width = matches[2]|'' // 图片宽度，用于判断是否更新url
+  const height = matches[3]|''; // 图片高度，用于判断是否更新url
   let { env, cf, ctx } = getRequestContext();
 
   let req_url = new URL(request.url);
@@ -186,6 +190,7 @@ async function getFile_path(env, file_id) {
     let responseData = await res.json();
 
     if (responseData.ok) {
+      console.log(responseData);
       const file_path = responseData.result.file_path
       return file_path
     } else {
