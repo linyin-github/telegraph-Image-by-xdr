@@ -110,19 +110,23 @@ export async function GET(request, { params }) {
 
 
   try {
+
     const file_path = await getFile_path(env, base_name);
     const fileName = file_path.split('/').pop();
     const contentTypeForWh = getContentType(fileName);
     // modify 20250213 ,如果地址没有图片宽度和高度，重新上传获取并更新url地址，使用文件名判断是否需要重新上传获取宽高，只有图片才需要
     console.log("contentTypeForWh:"+contentTypeForWh+",width:"+width+",height:"+height);
     if(!height && !width && contentTypeForWh.indexOf('image')!=-1){
-      const fileData = await uploadForWH(env,base_name);
-      console.log(fileData);
-      if(fileData){//防止fileData返回null导致报错
-        const update_url = base_name + '-'+ fileData.width +'x'+fileData.height; //拼接图片宽度和高度
-        await updateUrl(env,base_name,update_url);
+      // 判断是否需要重新获取宽高，如果使用不含宽高的URL查询到数据才需要重新获取并修改url
+      let imgWh = await getUrl(env.IMG, `/cfile/${base_name}`);
+      if (imgWh === 1) {
+        const fileData = await uploadForWH(env,base_name);
+        console.log(fileData);
+        if(fileData){//防止fileData返回null导致报错
+          const update_url = base_name + '-'+ fileData.width +'x'+fileData.height; //拼接图片宽度和高度
+          await updateUrl(env,base_name,update_url);
+        }
       }
-      
     }
 
     if (file_path === "error") {
@@ -300,7 +304,12 @@ async function getRating(DB, url) {
   return result ? result.rating : null;
 }
 
-
+// 从数据库获取url地址，用于判断是否需要重新获取宽高信息
+async function getUrl(DB, url) {
+  const ps = DB.prepare(`SELECT count(1) as num FROM imginfo WHERE url='${url}'`);
+  const result = await ps.first();
+  return result ? result.num : null;
+}
 
 
 
