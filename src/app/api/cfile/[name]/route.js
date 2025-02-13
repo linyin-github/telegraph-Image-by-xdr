@@ -100,6 +100,13 @@ export async function GET(request, { params }) {
   try {
     const file_path = await getFile_path(env, base_name);
     const fileName = file_path.split('/').pop();
+    const contentTypeForWh = getContentType(fileName);
+    // modify 20250213 ,如果地址没有图片宽度和高度，重新上传获取并更新url地址，使用文件名判断是否需要重新上传获取宽高，只有图片才需要
+    if(!height && !width && contentTypeForWh.indexOf('image')!=-1){
+      const fileData = await uploadForWH(env,file_id);
+      const update_url = base_name + '-'+ fileData.width +'x'+fileData.height; //拼接图片宽度和高度
+      await updateUrl(env,base_name,update_url);
+    }
 
     if (file_path === "error") {
       return Response.json({
@@ -123,7 +130,6 @@ export async function GET(request, { params }) {
         const fileBuffer = await res.arrayBuffer();
         const contentType = getContentType(fileName);
         console.log("contentType:"+contentType);
-        // 解析图片的宽度和高度
 
         const responseHeaders = {
           "Content-Disposition": `inline; filename=${fileName}`,
@@ -174,6 +180,53 @@ export async function GET(request, { params }) {
 
 }
 
+/**
+ * 重新通过fileid上传获取图片宽高
+ */
+async function uploadForWH(env,file_id) {
+
+  const up_url = `https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendPhoto`;
+	let newformData = new FormData();
+	newformData.append("chat_id", env.TG_CHAT_ID);
+	newformData.append("caption", 'uploadForWH');
+	newformData.append(fileTypevalue, file_id);
+
+  try{
+		const res_img = await fetch(up_url, {
+			method: "POST",
+			headers: {
+				"User-Agent": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0"
+			},
+			body: newformData,
+		});
+		let responseData = await res_img.json();
+
+
+    // modify 20250212 ，新增图片宽高信息返回，添加到图片访问地址中，用于wordpress预加载时使用
+		const getFileDetails = (file) => ({
+			file_id: file.file_id,
+			file_name: file.file_name || file.file_unique_id,
+			width: file.width,
+			height: file.height
+		});
+
+		if (responseData.result.photo) {
+			const largestPhoto = responseData.result.photo.reduce((prev, current) =>
+				(prev.file_size > current.file_size) ? prev : current
+			);
+			return getFileDetails(largestPhoto);
+		}else{
+			console.log("不存在responseData.result.photo");
+			console.log(responseData);
+      return null;
+		}
+		
+	} catch (error) {
+		console.log("uploadForWH");
+		console.log(error);
+		return null;
+	}
+}
 
 async function getFile_path(env, file_id) {
   try {
@@ -251,5 +304,17 @@ async function logRequest(env, base_name, referer, ip) {
     const setData = await env.IMG.prepare(`UPDATE imginfo SET total = total +1 WHERE url = '/rfile/${base_name}';`).run()
   } catch (error) {
     console.error('Error logging request:', error);
+  }
+}
+
+
+// 更新url地址
+async function updateUrl(env, old_url,update_url) {
+  console.log("原url地址："+old_url+",更新url地址："+update_url);
+  try {
+    const nowTime = await get_nowTime()
+    const setData = await env.IMG.prepare(`UPDATE imginfo SET url = '/cfile/${update_url}' WHERE url = '/cfile/${old_url}';`).run()
+  } catch (error) {
+    console.error('Error update url:', error);
   }
 }
