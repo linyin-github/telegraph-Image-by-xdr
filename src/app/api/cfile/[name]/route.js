@@ -42,14 +42,26 @@ export async function OPTIONS(request) {
 
 // 判断Referer是否允许
 
-
 export async function GET(request, { params }) {
   const { name } = params;
-  //const base_name = name.split(".")[0];
-  const matches = name.match(/([^\/]+)(?:-(\d+)x(\d+))?(?:\.jpg)?$/);;
-  const base_name = matches[1]; // url地址部分
-  const width = matches[2]; // 图片宽度，用于判断是否更新url
-  const height = matches[3]; // 图片高度，用于判断是否更新url
+  const str = name.split(".")[0];
+  const sizePattern = /-\d+x\d+$/;
+  const hasSize = sizePattern.test(str);
+
+  let base_name = str;
+  let width = null;
+  let height = null;
+
+  if (hasSize) {
+      const sizeMatch = str.match(/-(\d+)x(\d+)$/);
+      if (sizeMatch) {
+          width = parseInt(sizeMatch[1], 10);
+          height = parseInt(sizeMatch[2], 10);
+          base_name = str.substring(0, sizeMatch.index);
+      }
+  }
+
+
   console.log("base_name:"+base_name+",width:"+width+",height:"+height);
   let { env, cf, ctx } = getRequestContext();
 
