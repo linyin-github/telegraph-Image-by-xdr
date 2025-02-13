@@ -48,8 +48,8 @@ export async function GET(request, { params }) {
   //const base_name = name.split(".")[0];
   const matches = name.match(/([^\/]+)(?:-(\d+)x(\d+))?(?:\.jpg)?$/);;
   const base_name = name.split(".")[0]; // url地址部分
-  const width = matches[2]|'' // 图片宽度，用于判断是否更新url
-  const height = matches[3]|''; // 图片高度，用于判断是否更新url
+  const width = matches[2]; // 图片宽度，用于判断是否更新url
+  const height = matches[3]; // 图片高度，用于判断是否更新url
   console.log("base_name:"+base_name+",width:"+width+",height:"+height);
   let { env, cf, ctx } = getRequestContext();
 
@@ -102,7 +102,7 @@ export async function GET(request, { params }) {
     const fileName = file_path.split('/').pop();
     const contentTypeForWh = getContentType(fileName);
     // modify 20250213 ,如果地址没有图片宽度和高度，重新上传获取并更新url地址，使用文件名判断是否需要重新上传获取宽高，只有图片才需要
-    console.log("contentTypeForWh:"+contentTypeForWh);
+    console.log("contentTypeForWh:"+contentTypeForWh+",width:"+width+",height:"+height);
     if(!height && !width && contentTypeForWh.indexOf('image')!=-1){
       const fileData = await uploadForWH(env,base_name);
       console.log(fileData);
