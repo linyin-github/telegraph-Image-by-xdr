@@ -121,15 +121,13 @@ export async function GET(request, { params }) {
 
       if (res.ok) {
         const fileBuffer = await res.arrayBuffer();
+        const contentType = getContentType(fileName);
+        console.log("contentType:"+contentType);
         // 解析图片的宽度和高度
         const widthAndHeight = await getImageDimensions(fileBuffer, contentType);
         console.log("Width:", widthAndHeight.width);
         console.log("Height:", widthAndHeight.height);
         console.log(`Image Dimensions: ${widthAndHeight.width}x${widthAndHeight.height}`);
-
-
-        const contentType = getContentType(fileName);
-        console.log("contentType:"+contentType);
         const responseHeaders = {
           "Content-Disposition": `inline; filename=${fileName}`,
           "Access-Control-Allow-Origin": "*",
