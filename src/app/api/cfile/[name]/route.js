@@ -116,7 +116,7 @@ export async function GET(request, { params }) {
     const contentTypeForWh = getContentType(fileName);
     // modify 20250213 ,如果地址没有图片宽度和高度，重新上传获取并更新url地址，使用文件名判断是否需要重新上传获取宽高，只有图片才需要
     console.log("contentTypeForWh:"+contentTypeForWh+",width:"+width+",height:"+height);
-    if(!height && !width && contentTypeForWh.indexOf('image')!=-1){
+    if(!height && !width && contentTypeForWh.indexOf('image')!=-1&&false){
       // 判断是否需要重新获取宽高，如果使用不含宽高的URL查询到数据才需要重新获取并修改url
       let imgWh = await getUrl(env.IMG, `/cfile/${base_name}`);
       if (imgWh === 1) {
